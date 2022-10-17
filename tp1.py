@@ -97,7 +97,7 @@ def main():
             
             # Resetar o triangulo
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                poly_vertex = [[100, 200], [50, 50], [300, 100]]
+                poly_vertex = [[50, 200], [50, 50], [200, 50]]
                 
 
         # Desenha eixos cartesianos
