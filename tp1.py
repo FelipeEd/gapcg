@@ -5,8 +5,8 @@ import pdb
 """
 OBS: Para rodar o programa é necessario instalar o pacote numpy e pygame.
 
-O programa permite escolher o eixo de reflexao interativamente, inicialmente
-feito com um triangulo, mas basta adicionar pontos para ter novas figuras.
+O programa permite escolher o eixo de reflexao interativamente, basta adicionar pontos 
+para ter o poligono a ser exibido.
 
 Comandos:
     Click com o botao esquerdo do mouse cria o eixo de reflexão e reflete o poligono.
@@ -68,7 +68,7 @@ def main():
 
     # pontos do poligono ------------------------------------------------------
 
-    poly_vertex = [[50, 200], [50, 50], [200, 50]]
+    poly_vertex = []
 
     # ---------------------------------------------------------------------------
     origem = to_pygame([0, 0])
@@ -95,9 +95,9 @@ def main():
                 pos = pygame.mouse.get_pos()
                 poly_vertex.append(to_cartesian([pos[0], pos[1]]))
             
-            # Resetar o triangulo
+            # Resetar o poligono
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                poly_vertex = [[50, 200], [50, 50], [200, 50]]
+                poly_vertex = []
                 
 
         # Desenha eixos cartesianos
@@ -106,8 +106,9 @@ def main():
         pygame.draw.line(screen, (200, 50, 50), to_pygame(
             [0, -max_y]), to_pygame([0, max_y]), 1)
 
-        pygame.draw.polygon(screen, (50, 50, 200),
-                            tuple(poly_to_pygame(poly_vertex)))
+        if(len(poly_vertex)>2):
+            pygame.draw.polygon(screen, (50, 50, 200),
+                                tuple(poly_to_pygame(poly_vertex)))
 
         # Desenha eixo de reflexão
         if eixo:
@@ -118,8 +119,9 @@ def main():
 
             # Desenha triângulo refletido
             ref_poly = reflect_poly(rad, poly_vertex)
-            pygame.draw.polygon(screen, (200, 40, 180),
-                                tuple(poly_to_pygame(ref_poly)))
+            if(len(poly_vertex)>2):
+                pygame.draw.polygon(screen, (200, 40, 180),
+                                    tuple(poly_to_pygame(ref_poly)))
 
         # Exibe coordenadas do ponteiro do mouse
         myFont = pygame.font.SysFont("Times New Roman", 16)
