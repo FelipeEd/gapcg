@@ -1,0 +1,5 @@
+Implementamos duas vizualizações, deve executar "rotation.py" para ver rotações e "slerp.py" para vizualização do slerp. 
+
+Cada um desses arquivos possui uma breve orientação sobre onde estão as coisas e como funciona logo no inicio dos arquivos.
+
+Os outros arquivos tem as classes usadas para implementar estes procedimentos e não devem ser executados.

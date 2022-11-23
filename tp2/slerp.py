@@ -1,9 +1,11 @@
 import numpy as np
 import pygame
+import time
 from class_quat import *
 from class_cube import *
+from extra_functions import *
 """
-! Para rodar o programa é necessario instalar os pacotes numpy e pygame. ! 
+! Para rodar o programa é necessario instalar os pacotes numpy e pygame.!
 
 Implementar:
 
@@ -11,18 +13,16 @@ Implementar:
 2. Rotação usando quaternions.
 3. Slerp.
 
-Esse arquivo possui a implementação da rotação por conjugação de quaternions
-unitários, modificando a variavel "eixo" e "angulo_por_frame" no inicio do main
-obterá novas rotações.
+Esse arquivo possui a implementação do Slerp, atualmente ele gera duas rotações
+aleatórias e exibe uma animação da rotação que interpola elas usando quaternions
 
-obs: A função de rotação se encontra no arquivo "class_cube.py" como método "rot" da classe cube.
- 
-A multiplicação de quaternions usando 8 multiplicações de float está em "class_quat.py" como método "__mul__" da classe quat
+obs: A implementação da função SLERP se encontra no arquivo "class_cube.py" como método da classe, "drawSlerp".
 
 """
 
 
 def main():
+    random.seed(time.time())
     pygame.init()
     screen = pygame.display.set_mode([width, height])
 
@@ -30,17 +30,23 @@ def main():
     clock = pygame.time.Clock()
     fps = 60
     # Editar aqui--------------------------------------------------------------
-
+    # t do slerp
+    t = 0.0
     # 0.5 é o tamanho do cubo considerando que a tela vai de  -1 a 1
-    cube = Cube(0.5)
+    cube_ini = Cube(0.5, (0, 200, 50))
+    cube_fin = Cube(0.5, (200, 10, 50))
+    cube_iter = Cube(0.5)
 
-    # Não precisa ser unitário pois a função de rotação normaliza
-    eixo = [1, 1, 1]
+    # Gerando eixos e angulos aleatórios
+    eixo1 = raxis()
+    eixo2 = raxis()
 
-    # Caso queira um eixo aleatorio descompente a linha de baixo
-    #eixo = raxis()
+    angulo1 = random.random() * 2 * np.pi
+    angulo2 = random.random() * 2 * np.pi
 
-    angulo_por_frame = 0.01
+    # Colocando a posição inicial dos cubos
+    cube_ini.rot(eixo1, angulo1)
+    cube_fin.rot(eixo2, angulo2)
 
     # --------------------------------------------------------------------------
 
@@ -55,18 +61,23 @@ def main():
 
         # ----------------------------------------------------------------------
 
-        # Desenha o cubo
-        cube.draw(screen)
-        # A cada frame rotaciona o cubo por um eixo e angulo,
-        # Desenhando na tela o eixo
-        cube.rot(eixo, angulo_por_frame, screen)
+        # Desenha os cubos
+        cube_ini.draw(screen, 1)
+        cube_fin.draw(screen, 1)
+
+        # Desenha a animação do slerp
+        cube_iter.drawSlerp(screen, eixo1, angulo1, eixo2, angulo2, t)
+
+        # Faz parar quando t = 1
+        if t <= 1:
+            t = t + 0.005
 
         # ----------------------------------------------------------------------
 
         # Exibe informações
         myFont = pygame.font.SysFont("Times New Roman", 18)
         msg = myFont.render(
-            f'Eixo {eixo[0]:.2f} {eixo[1]:.2f} {eixo[2]:.2f}  Angulo/s {angulo_por_frame}', 1, (255, 255, 255))
+            f't = {t:.2f}', 1, (255, 255, 255))
         screen.blit(msg, (0, 0))
         pygame.display.flip()
         clock.tick(fps)
